@@ -32,7 +32,12 @@ Pendientes:
 #----------------------------------------------------------------------------------------------
 # FUNCIONES
 #----------------------------------------------------------------------------------------------
-...
+def validarEntrada(textoCondicion, textoError, limite, condicionCorte):
+    var = float((input(textoCondicion)))
+    while ((var < limite) and var != condicionCorte):
+        print(textoError)
+        var = float(input(textoCondicion))
+    return var
 
 
 #----------------------------------------------------------------------------------------------
@@ -43,3 +48,19 @@ Pendientes:
 # ENTRADA DE DATOS
 #
 
+primeraVuelta = True
+while(primeraVuelta == True or precio != 0):
+    primeraVuelta = False
+    precio = validarEntrada(
+    "Ingrese 0 para terminar \nIngrese el precio de lista del producto: ",
+    "El precio no puede ser menor a 0", 0, 0)
+    print()
+    if precio != 0:
+        print("FORMA DE PAGO \t\tPRECIO TOTAL \t\tVALOR CUOTA")
+        print("EFECTIVO \t\t${:.2f}".format(precio * 0.9))
+        print("Tarjeta 1 pago: \t${:.2f}".format(precio))
+        print("Tarjeta 3 pagos: \t${:.2f}\t\t${:.2f}".format(precio * 1.05, (precio * 1.05) / 3))
+        print("Tarjeta 6 pagos: \t${:.2f}\t\t${:.2f}".format(precio * 1.1, (precio * 1.1) / 6))
+        print("Tarjeta 12 pagos: \t${:.2f}\t\t${:.2f}".format(precio * 1.15, (precio * 1.15) / 12))
+    print()
+        
