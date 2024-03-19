@@ -36,7 +36,7 @@ sumaTemperatura = 0
 for i in range (1,31):
     while True:
         try:
-            temperatura = float(round(input("Ingrese la temperatura: ")))
+            temperatura = round(float(input("Ingrese la temperatura: ")))
             break
         except ValueError:
             print("Por favor, ingrese una temperatura correcta")
