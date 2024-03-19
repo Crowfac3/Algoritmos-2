@@ -33,7 +33,7 @@ Pendientes:
 #
 sumaTemperatura = 0
 
-for i in range (1,31):
+for i in range (1,32):
     while True:
         try:
             temperatura = float(input("Ingrese la temperatura: "))
