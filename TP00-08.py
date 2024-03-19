@@ -36,7 +36,7 @@ sumaTemperatura = 0
 for i in range (1,31):
     while True:
         try:
-            temperatura = round(float(input("Ingrese la temperatura: ")))
+            temperatura = float(input("Ingrese la temperatura: "))
             break
         except ValueError:
             print("Por favor, ingrese una temperatura correcta")
@@ -51,6 +51,6 @@ for i in range (1,31):
         temperaturaMinima = temperatura
 
 print("La temperatura promedio del mes es: " , round((sumaTemperatura / 31) , 2 ))
-print("La temperatura Maxima registrada fue: " , temperaturaMaxima)
-print("La temperatura Minima registrada fue: " , temperaturaMinima)
+print("La temperatura Maxima registrada fue: " , round(temperaturaMaxima))
+print("La temperatura Minima registrada fue: " , round(temperaturaMinima))
 
