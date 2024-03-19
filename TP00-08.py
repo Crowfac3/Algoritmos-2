@@ -51,6 +51,6 @@ for i in range (1,31):
         temperaturaMinima = temperatura
 
 print("La temperatura promedio del mes es: " , round((sumaTemperatura / 31) , 2 ))
-print("La temperatura Maxima registrada fue: " , round(temperaturaMaxima))
-print("La temperatura Minima registrada fue: " , round(temperaturaMinima))
+print("La temperatura Maxima registrada fue: " , round(temperaturaMaxima) , 2)
+print("La temperatura Minima registrada fue: " , round(temperaturaMinima) , 2)
 
