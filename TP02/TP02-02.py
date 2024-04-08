@@ -22,9 +22,14 @@ Pendientes:
 #----------------------------------------------------------------------------------------------
 # FUNCIONES
 #----------------------------------------------------------------------------------------------
+listaNombreMeses = ["Enero" , "Febrero" , "Marzo" , "Abril" , "Mayo" , "Junio" , "Julio" , "Agosto" , "Septiembre" , "Octubre" , "Noviembre" , "Diciembre"]
 
+def nombreDelMes(numero):
+    return listaNombreMeses[numero  - 1]
 #----------------------------------------------------------------------------------------------
 # CUERPO PRINCIPAL
 #----------------------------------------------------------------------------------------------
 
+numeroDelMes = int(input("Ingrese el numero del mes 1-12: "))
+print (nombreDelMes(numeroDelMes))
 
