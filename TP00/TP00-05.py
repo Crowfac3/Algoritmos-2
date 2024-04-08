@@ -23,7 +23,7 @@ Pendientes:
 # FUNCIONES
 #----------------------------------------------------------------------------------------------
 
-def validarEntrada(textoCondicion, textoError, limite, condicionCorte):
+def validarEntrada(textoCondicion , textoError , limite , condicionCorte):
     var = float(input(textoCondicion))
     while (var < limite and var != condicionCorte):
         print(textoError)
@@ -39,16 +39,16 @@ def validarEntrada(textoCondicion, textoError, limite, condicionCorte):
 #
 
 
-precio = validarEntrada("Ingrese 0 para salir \nSino ingrese el precio del producto: ","El precio no puede ser menor que 0", -1, 0)
+precio = validarEntrada("Ingrese 0 para salir \nSino ingrese el precio del producto: " , "El precio no puede ser menor que 0" , -1 , 0)
 contadorProductos = 0
 sumaTotal = 0
 while precio != 0:
     contadorProductos += 1
     sumaTotal += precio
     print()
-    print("Productos en el carrito:",contadorProductos)
+    print("Productos en el carrito:" , contadorProductos)
     print()
-    precio = validarEntrada("Ingrese 0 para salir \nSino ingrese el precio del producto: ","El precio no puede ser menor que 0", -1, 0)
+    precio = validarEntrada("Ingrese 0 para salir \nSino ingrese el precio del producto: " , "El precio no puede ser menor que 0" , -1, 0)
 print()
-print("Se abonaran",contadorProductos,"de productos")
-print("El total a abonar es:",sumaTotal)
+print("Se abonaran" , contadorProductos , "de productos")
+print("El total a abonar es:" , sumaTotal)

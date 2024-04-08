@@ -22,7 +22,7 @@ Pendientes:
 #----------------------------------------------------------------------------------------------
 # FUNCIONES
 #----------------------------------------------------------------------------------------------
-def validarEntrada(textoCondicion, textoError, limite):
+def validarEntrada(textoCondicion , textoError , limite):
     entrada = float(input(textoCondicion))
     while (entrada < limite):
         print(textoError)
@@ -37,8 +37,8 @@ def validarEntrada(textoCondicion, textoError, limite):
 #
 # ENTRADA DE DATOS
 #
-limiteActual = validarEntrada("Ingrese el limite actual del cliente: ","El limmite no puede ser menor a 0",0)
-tipoTarjetaCliente = validarEntrada("Ingrese el tipo de la tarjeta del cliente: ","El tipo de tarjeta es incorrecto.",1)
+limiteActual = validarEntrada("Ingrese el limite actual del cliente: " , "El limmite no puede ser menor a 0" , 0)
+tipoTarjetaCliente = validarEntrada("Ingrese el tipo de la tarjeta del cliente: " , "El tipo de tarjeta es incorrecto." , 1)
 
 if tipoTarjetaCliente == 1:
     limiteNuevo = limiteActual * 1.25

@@ -37,6 +37,6 @@ precioTotalCompra = float(input("Ingrese el precio total de la compra: "))
 montoAbonado = float(input("Ingrese el monto que entrego el cliente: "))
 
 if precioTotalCompra < montoAbonado:
-    print("El vuelto del cliente es: $",(montoAbonado - precioTotalCompra))
+    print("El vuelto del cliente es: $" , (montoAbonado - precioTotalCompra))
 else:
     print("No alcanza para pagar el precio total de la compra")

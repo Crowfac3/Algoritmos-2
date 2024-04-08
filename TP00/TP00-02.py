@@ -38,6 +38,6 @@ cantidadAsientos = int(input("Ingrese la cantidad de asientos en el auditorio: "
 
 if cantidadInscriptos > cantidadAsientos:
     print("La cantidad de asientos no alcanza para la totalidad de los inscriptos")
-    print("Faltarian",(cantidadInscriptos - cantidadAsientos),"asientos para que los inscriptos puedan sentarse.")
+    print("Faltarian" , (cantidadInscriptos - cantidadAsientos) , "asientos para que los inscriptos puedan sentarse.")
 else:
     print("La cantidad de asientos es suficiente.")
