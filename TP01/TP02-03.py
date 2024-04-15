@@ -13,7 +13,7 @@ Cantidad de viajes      Valor de 1 pasaje
 1 a 20                  Averiguar en internet el valor actualizado
 21 a 30                 20% de descuento
 31 a 40                 30% de descuento
-41 o más                4 0% de descuento
+41 o más                40% de descuento
 
 Pendientes:
 -----------------------------------------------------------------------------------------------
@@ -28,11 +28,28 @@ Pendientes:
 #----------------------------------------------------------------------------------------------
 # FUNCIONES
 #----------------------------------------------------------------------------------------------
-...
+def gastosRealizados(cantidadViajes, precioPasaje):
+    gasto = cantidadViajes * precioPasaje
+    if cantidadViajes >= 21 and cantidadViajes <= 30:
+        gasto = gasto * 0.80
+    elif cantidadViajes >= 31 and cantidadViajes <= 40:
+        gasto = gasto * 0.70
+    elif cantidadViajes >= 41:
+        gasto = gasto * 0.60
+    return gasto
+
 
 
 #----------------------------------------------------------------------------------------------
 # CUERPO PRINCIPAL
 #----------------------------------------------------------------------------------------------
-...
+precioPasaje = 125
+
+viajesRealizados = int(input("Ingrese la cantidad de viajes realizados: "))
+
+if viajesRealizados > 0:
+    gastoDeViajes = gastosRealizados(viajesRealizados, precioPasaje)
+    print("El total gastado en viajes es: $", gastoDeViajes)
+else:
+    print("No puede haber viajes negativos")
 

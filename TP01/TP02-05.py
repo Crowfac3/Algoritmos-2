@@ -30,11 +30,27 @@ Pendientes:
 #----------------------------------------------------------------------------------------------
 # FUNCIONES
 #----------------------------------------------------------------------------------------------
-...
+def esOblongo (numero):
+    for i in range (1, numero - 1):
+        if i * (i + 1) == numero:
+            return True
+    return False
+
+def esTriangular (numero):
+    suma = 0
+    for i in range (1, numero // 2):
+        suma += i
+        if suma == numero:
+            return True
+    return False
 
 
 #----------------------------------------------------------------------------------------------
 # CUERPO PRINCIPAL
 #----------------------------------------------------------------------------------------------
-...
+numero = int(input("Ingrese el numero: "))
+if esOblongo(numero) == True:
+    print("El numero es Oblongo")
+if esTriangular(numero) == True:
+    print("El numero es Triangular")
 
