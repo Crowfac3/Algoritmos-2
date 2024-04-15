@@ -43,8 +43,57 @@ def diaDeLaSemana (dia, mes, anio):
     return diaSem
 
 
+def diasDelMes(mes, anio):
+    if mes == 1:
+        return 31
+    elif mes == 2:
+        if anioBisiesto(anio) == True:
+            return 29
+        else: return 28
+    elif mes == 3: return 31
+    elif mes == 4: return 30
+    elif mes == 5: return 31  
+    elif mes == 6: return 30
+    elif mes == 7: return 31
+    elif mes == 8: return 31
+    elif mes == 9: return 30
+    elif mes == 10: return 31
+    elif mes == 11: return 30
+    elif mes == 12: return 31
+    
+
+def anioBisiesto(anio):
+    if anio % 4 == 0:
+        if anio % 100 == 0:
+            if anio % 400 == 0:
+                return True
+            else:
+                return False
+        else:
+            return True
+    else:
+        return False
+
 #----------------------------------------------------------------------------------------------
 # CUERPO PRINCIPAL
 #----------------------------------------------------------------------------------------------
-...
+mes = int(input("Ingrese el mes a mostrar: "))
+anio = int(input("Ingrese el año a mostrar: "))
+dias = 1
+
+cantidadDeDias = diasDelMes(mes, anio)
+primerDia = diaDeLaSemana(1, mes, anio)
+
+print("Do\tLu\tMa\tMi\tJu\tVi\tSa")
+for i in range(primerDia):
+    print("\t", end="")
+while dias <= cantidadDeDias:
+    for i in range (primerDia, 7):
+        print(dias,"\t", end="")
+        dias += 1
+        primerDia = 0
+        if dias-1 == cantidadDeDias:
+            break
+    print()
+    
 

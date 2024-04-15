@@ -22,11 +22,23 @@ Pendientes:
 #----------------------------------------------------------------------------------------------
 # FUNCIONES
 #----------------------------------------------------------------------------------------------
-...
+def concatenarNumero(numero1, numero2):
+    multiplicador = 1
+    esCero = False
+    while esCero == False:
+        if numero2 // multiplicador != 0:
+            multiplicador *= 10
+        else:
+            esCero = True
+    numero1 = numero1 * multiplicador
+    return (numero1 + numero2)
 
 
 #----------------------------------------------------------------------------------------------
 # CUERPO PRINCIPAL
 #----------------------------------------------------------------------------------------------
-...
+numero1 = int(input("Ingrese el primer numero: "))
+numero2 = int(input("Ingrese el segundo numero para concatenar: "))
+
+print("El numero concatenado es:", concatenarNumero(numero1, numero2))
 
