@@ -33,8 +33,12 @@ def fechaValida(dia, mes, anio):
             if anioBisiesto(anio) == True:
                 if dia <= 29:
                     return True
+                else: 
+                    return False
             elif dia <= 28:
                 return True
+            else:
+                return False
         elif mes == 3 and dia <= 31:
             return True
         elif mes == 4 and dia <= 30:
@@ -85,13 +89,5 @@ def diaSiguiente(dia,mes,anio):
 #----------------------------------------------------------------------------------------------
 # CUERPO PRINCIPAL
 #----------------------------------------------------------------------------------------------
-dia = int(input("Ingrese el dia: "))
-mes = int(input("Ingrese el mes: "))
-anio = int(input("Ingrese el año: "))
-
-diasAgregar = int(input("Ingrese la cantidad de dias a sumar: "))
-
-for i in range (diasAgregar):
-    dia, mes, anio = diaSiguiente(dia, mes, anio)
-print("La fecha con los dias agregados es: ",dia,"/",mes,"/",anio)
+...
 

@@ -33,8 +33,12 @@ def fechaValida(dia, mes, anio):
             if anioBisiesto(anio) == True:
                 if dia <= 29:
                     return True
+                else: 
+                    return False
             elif dia <= 28:
                 return True
+            else:
+                return False
         elif mes == 3 and dia <= 31:
             return True
         elif mes == 4 and dia <= 30:
@@ -85,5 +89,21 @@ def diaSiguiente(dia,mes,anio):
 #----------------------------------------------------------------------------------------------
 # CUERPO PRINCIPAL
 #----------------------------------------------------------------------------------------------
-...
+contadorDias = 0
+
+print("Ingrese la primer fecha")
+diaInicio = int(input("Ingrese el dia: "))
+mesInicio = int(input("Ingrese el mes: "))
+anioInicio = int(input("Ingrese el año: "))
+
+print("Ingrese la segunda fecha")
+diaFinal = int(input("Ingrese el dia: "))
+mesFinal = int(input("Ingrese el mes: "))
+anioFinal = int(input("Ingrese el año: "))
+
+while diaInicio != diaFinal or mesInicio != mesFinal or anioInicio != anioFinal:
+    diaInicio, mesInicio, anioInicio = diaSiguiente(diaInicio, mesInicio, anioInicio)
+    contadorDias += 1
+
+print("La cantidad de dias entre las dos fechas es:",contadorDias)
 

@@ -84,6 +84,7 @@ dias = 1
 cantidadDeDias = diasDelMes(mes, anio)
 primerDia = diaDeLaSemana(1, mes, anio)
 
+print()
 print("Do\tLu\tMa\tMi\tJu\tVi\tSa")
 for i in range(primerDia):
     print("\t", end="")
@@ -95,5 +96,6 @@ while dias <= cantidadDeDias:
         if dias-1 == cantidadDeDias:
             break
     print()
+print()
     
 
