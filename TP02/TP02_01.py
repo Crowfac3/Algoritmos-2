@@ -27,3 +27,7 @@ Pendientes:
 # CUERPO PRINCIPAL
 #----------------------------------------------------------------------------------------------
 
+materiasEnCurso = ["Programacion 1", "Sistemas de Informacion II", "Sistemas Operativos I", "Testing de Aplicaciones"]
+
+for materia in materiasEnCurso:
+    print(materia)
