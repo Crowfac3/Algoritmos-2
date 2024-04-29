@@ -26,11 +26,54 @@ Pendientes:
 #----------------------------------------------------------------------------------------------
 # FUNCIONES
 #----------------------------------------------------------------------------------------------
+def registrarPaciente(numeroDeAfiliado, urgencia):
+    if urgencia == 0:
+        if numeroDeAfiliado in PacientesUrgentes:
+            PacientesUrgentes[numeroDeAfiliado] += 1
+        else:
+            PacientesUrgentes[numeroDeAfiliado] = 1
+    else:
+        if numeroDeAfiliado in PacientesPorTurno:
+            PacientesPorTurno[numeroDeAfiliado] += 1
+        else:
+            PacientesPorTurno[numeroDeAfiliado] = 1
 
+def mostrarPacientesPorTipo():
+    print("Pacientes atendidos por urgencia: ")
+    for paciente, cantidad in PacientesUrgentes.items():
+        print(f"{paciente}: {cantidad} veces")
+    print("Pacientes atendidos por turno: ")
+    for paciente, cantidad in PacientesPorTurno.items():
+        print(f"{paciente}: {cantidad} veces")
+
+def buscarPaciente(numeroDeAfiliado):
+    if numeroDeAfiliado in PacientesUrgentes:
+        contadorDeUrgencia = PacientesUrgentes[numeroDeAfiliado]
+    else:
+        contadorDeUrgencia = 0
+    if numeroDeAfiliado in PacientesPorTurno:
+        contadorDeTurno = PacientesPorTurno[numeroDeAfiliado]
+    else:
+        contadorDeTurno = 0
+    print(f"Paciente {numeroDeAfiliado} atendido {contadorDeTurno} veces por turno y {contadorDeUrgencia} veces por urgencia")
 
 #----------------------------------------------------------------------------------------------
 # CUERPO PRINCIPAL
 #----------------------------------------------------------------------------------------------
+PacientesUrgentes = []
+PacientesPorTurno = []
 
 
 
+while True:
+    numeroDeAfiliado = int(input("Ingrese número de afiliado (-1 para finalizar): "))
+    if numeroDeAfiliado == -1:
+        break
+    urgencia = int(input("Ingrese 0 para urgencia o 1 para turno: "))
+    registrarPaciente(numeroDeAfiliado, urgencia)
+mostrarPacientesPorTipo()
+while True:
+    numeroDeAfiliado = int(input("Ingrese número de afiliado a buscar (-1 para finalizar): "))
+    if numeroDeAfiliado == -1:
+        break
+    buscarPaciente(numeroDeAfiliado)

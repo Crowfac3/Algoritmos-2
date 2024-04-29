@@ -16,7 +16,7 @@ Pendientes:
 #----------------------------------------------------------------------------------------------
 # MÓDULOS
 #----------------------------------------------------------------------------------------------
-...
+import random
 
 
 #----------------------------------------------------------------------------------------------
@@ -27,6 +27,10 @@ Pendientes:
 #----------------------------------------------------------------------------------------------
 # CUERPO PRINCIPAL
 #----------------------------------------------------------------------------------------------
+listaNumerosAleatorios = [random.randint(1,100) for i in range(100)]
+impares = list(filter(lambda elemento: elemento % 2!= 0,listaNumerosAleatorios))
 
-
-
+print("Lista de números aleatorios:")
+print(listaNumerosAleatorios)
+print("Lista de números impares:")
+print(impares)

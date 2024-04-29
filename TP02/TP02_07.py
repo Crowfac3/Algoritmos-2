@@ -22,11 +22,21 @@ Pendientes:
 #----------------------------------------------------------------------------------------------
 # FUNCIONES
 #----------------------------------------------------------------------------------------------
-
+def ordenada(lista):
+    for i in range(len(lista) - 1):
+        if lista[i] > lista[i + 1]:
+            return False
+    return True
 
 #----------------------------------------------------------------------------------------------
 # CUERPO PRINCIPAL
 #----------------------------------------------------------------------------------------------
+listaOrdenada = [1, 2, 3]
+listaDesordenada = ['b', 'a']
+listaOrdenada2 = [4, 5, 6]
+listaDesordenada2 = [3, 2, 1]
 
-
-
+print("Lista ordenada:", listaOrdenada, "Resultado:", ordenada(listaOrdenada))
+print("Lista desordenada:", listaDesordenada, "Resultado:", ordenada(listaDesordenada))
+print("Lista ordenada:", listaOrdenada2, "Resultado:", ordenada(listaOrdenada2))
+print("Lista desordenada:", listaDesordenada2, "Resultado:", ordenada(listaDesordenada2))

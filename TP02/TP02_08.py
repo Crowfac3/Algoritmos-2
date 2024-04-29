@@ -23,11 +23,22 @@ Pendientes:
 #----------------------------------------------------------------------------------------------
 # FUNCIONES
 #----------------------------------------------------------------------------------------------
-
+def normalizar(lista):
+    nuevaLista = []
+    suma = sum(lista)
+    for elemento in lista:
+        nuevaLista.append(elemento/suma)
+    return nuevaLista
 
 #----------------------------------------------------------------------------------------------
 # CUERPO PRINCIPAL
 #----------------------------------------------------------------------------------------------
+lista1 = [1, 1, 2]
+lista2 = [1, 2, 3, 4]
+lista3 = [10, 20, 30]
 
 
+print("Lista original:", lista1, "Resultado:", normalizar(lista1))
+print("Lista original:", lista2, "Resultado:", normalizar(lista2))
+print("Lista original:", lista3, "Resultado:", normalizar(lista3))
 
