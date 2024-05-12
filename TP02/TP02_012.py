@@ -26,42 +26,31 @@ Pendientes:
 #----------------------------------------------------------------------------------------------
 # FUNCIONES
 #----------------------------------------------------------------------------------------------
-def registrarPaciente(numeroDeAfiliado, urgencia):
+def registrarPaciente(pacientes_Urgentes, pacientes_Turno, numeroDeAfiliado, urgencia):
     if urgencia == 0:
-        if numeroDeAfiliado in PacientesUrgentes:
-            PacientesUrgentes[numeroDeAfiliado] += 1
-        else:
-            PacientesUrgentes[numeroDeAfiliado] = 1
+        pacientes_Urgentes.append(numeroDeAfiliado)
     else:
-        if numeroDeAfiliado in PacientesPorTurno:
-            PacientesPorTurno[numeroDeAfiliado] += 1
-        else:
-            PacientesPorTurno[numeroDeAfiliado] = 1
+        pacientes_Turno.append(numeroDeAfiliado)
 
-def mostrarPacientesPorTipo():
-    print("Pacientes atendidos por urgencia: ")
-    for paciente, cantidad in PacientesUrgentes.items():
-        print(f"{paciente}: {cantidad} veces")
-    print("Pacientes atendidos por turno: ")
-    for paciente, cantidad in PacientesPorTurno.items():
-        print(f"{paciente}: {cantidad} veces")
 
-def buscarPaciente(numeroDeAfiliado):
-    if numeroDeAfiliado in PacientesUrgentes:
-        contadorDeUrgencia = PacientesUrgentes[numeroDeAfiliado]
-    else:
-        contadorDeUrgencia = 0
-    if numeroDeAfiliado in PacientesPorTurno:
-        contadorDeTurno = PacientesPorTurno[numeroDeAfiliado]
-    else:
-        contadorDeTurno = 0
-    print(f"Paciente {numeroDeAfiliado} atendido {contadorDeTurno} veces por turno y {contadorDeUrgencia} veces por urgencia")
+def mostrarPacientesPorTipo(pacientes_Urgentes, pacientes_Turno):
+    print("Pacientes atendidos por urgencia:")
+    for paciente in pacientes_Urgentes:
+        print(paciente)
+    print("Pacientes atendidos por turno:")
+    for paciente in pacientes_Turno:
+        print(paciente)
 
+def buscarPaciente(pacientes_Urgentes, pacientes_Turno, numeroDeAfiliado):
+    veces_urgencia = pacientes_Urgentes.count(numeroDeAfiliado)
+    veces_turno = pacientes_Turno.count(numeroDeAfiliado)
+    print(f"El paciente {numeroDeAfiliado} fue atendido por urgencia {veces_urgencia} veces y por turno {veces_turno} veces.")
+   
 #----------------------------------------------------------------------------------------------
 # CUERPO PRINCIPAL
 #----------------------------------------------------------------------------------------------
-PacientesUrgentes = []
-PacientesPorTurno = []
+pacientesUrgentes = []
+pacientesPorTurno = []
 
 
 
@@ -69,11 +58,19 @@ while True:
     numeroDeAfiliado = int(input("Ingrese número de afiliado (-1 para finalizar): "))
     if numeroDeAfiliado == -1:
         break
+    elif (numeroDeAfiliado < 1000) or (numeroDeAfiliado > 9999):
+        print("El número de afiliado debe tener 4 dígitos. Por favor, inténtalo de nuevo.")
+        continue
     urgencia = int(input("Ingrese 0 para urgencia o 1 para turno: "))
-    registrarPaciente(numeroDeAfiliado, urgencia)
-mostrarPacientesPorTipo()
+    if urgencia not in [0, 1]:
+        print("El valor de urgencia debe ser 0 o 1. Por favor, inténtalo de nuevo.")
+        continue
+    registrarPaciente(pacientesUrgentes, pacientesPorTurno, numeroDeAfiliado, urgencia)
+
+mostrarPacientesPorTipo(pacientesUrgentes, pacientesPorTurno)
+
 while True:
     numeroDeAfiliado = int(input("Ingrese número de afiliado a buscar (-1 para finalizar): "))
     if numeroDeAfiliado == -1:
         break
-    buscarPaciente(numeroDeAfiliado)
+    buscarPaciente(pacientesUrgentes, pacientesPorTurno, numeroDeAfiliado)
