@@ -59,28 +59,75 @@ import random
 # FUNCIONES
 #----------------------------------------------------------------------------------------------
 
-
+#-------------------------------------------------
+# Bloque de menú
 #----------------------------------------------------------------------------------------------
-# CUERPO PRINCIPAL
-#----------------------------------------------------------------------------------------------
-tamanioMatriz = int(input("Ingrese el tamaño de la matriz: "))
+while True:
+    while True:
+        print()
+        print("---------------------------")
+        print("MENÚ DEL SISTEMA           ")
+        print("---------------------------")
+        print("[1] Generar matriz")
+        print("[2] Ordenar matriz")
+        print("[3] Intercambiar dos filas")
+        print("[4] Intercambiar dos columnas")
+        print("[5] Transponer matriz")
+        print("[6] Promedio de fila")
+        print("[7] Porcentaje de impares de columna")
+        print("[8] Verificación de simetría diagonal principal.")
+        print("[9] Opción 4")
+        print("---------------------------")
+        print("[0] Verificación de simetría diagonal secundaria.")
+        print()
+        opcion = input("Seleccione una opción: ")
+        if opcion in ("0","1","2","3","4","5","6","7","8","9"): # Sólo continua si se elije una opcion de menú válida
+            break
+        else:
+            input("Opción inválida. Presione ENTER para volver a seleccionar.")
+    print()
 
-# Se crea una lista con valores desde 0 hasta el tamaño de la matriz al cuadrado
-valores = [x for x in range(0, tamanioMatriz ** 2)] 
+    if opcion == "0": # Opción salir del programa
+        exit() # También puede ser sys.exit() para lo cual hay que importar el módulo sys
 
-# Se mezclan al azar los valores
-random.shuffle(valores) 
+    elif opcion == "1":   # Opción 1    --------------------------------------------------------------
+        
+        tamanioMatriz = int(input("Ingrese el tamaño de la matriz: "))
 
-# Se genera la matriz cargando los valores previamente mezclados
-filas, columnas = tamanioMatriz, tamanioMatriz
-matriz = []
-for f in range (filas):
-    matriz.append([])
-    for c in range (columnas):
-        matriz[f].append(valores[f * tamanioMatriz + c]) # Se toman de a uno los valores
+        # Se crea una lista con valores desde 0 hasta el tamaño de la matriz al cuadrado
+        valores = [x for x in range(0, tamanioMatriz ** 2)]
 
-# Se muestra la matriz
-for fila in matriz:
-    print(fila)
+        # Se mezclan al azar los valores
+        random.shuffle(valores) 
 
+        # Se genera la matriz cargando los valores previamente mezclados
+        filas, columnas = tamanioMatriz, tamanioMatriz
+        matriz = []
+        for f in range (filas):
+            matriz.append([])
+            for c in range (columnas):
+                matriz[f].append(valores[f * tamanioMatriz + c]) # Se toman de a uno los valores
 
+        # Se muestra la matriz
+        for fila in matriz:
+            print(fila)
+
+    elif opcion == "2":   # Opción 2    --------------------------------------------------------------
+        ...
+    elif opcion == "3":   # Opción 3    --------------------------------------------------------------
+        ...
+    elif opcion == "4":   # Opción 4    --------------------------------------------------------------
+        ...
+    elif opcion == "5":   # Opción 5    --------------------------------------------------------------
+        ...
+    elif opcion == "6":   # Opción 6    --------------------------------------------------------------
+        ...
+    elif opcion == "7":   # Opción 7    --------------------------------------------------------------
+        ...
+    elif opcion == "8":   # Opción 8    --------------------------------------------------------------
+        ...
+    elif opcion == "9":   # Opción 9    --------------------------------------------------------------
+        ...
+
+    input("\nPresione ENTER para volver al menú.")
+    print("\n\n")
