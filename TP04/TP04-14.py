@@ -17,33 +17,53 @@ repetirlos y ordenados alfabéticamente, recordando que las direcciones de mail 
 Pendientes:
 -----------------------------------------------------------------------------------------------
 """
-
 #----------------------------------------------------------------------------------------------
 # MÓDULOS
 #----------------------------------------------------------------------------------------------
 
-
-
 #----------------------------------------------------------------------------------------------
 # FUNCIONES
 #----------------------------------------------------------------------------------------------
+def validacionEmail(_mail):
+
+    partes = _mail.split("@")
+    if len(partes) != 2:
+        return False
+
+    usuario, dominio = partes
+
+    print(partes)
+
+    if not usuario.isalpha():
+        return False
+
+    if not dominio.endswith(".com.ar"):
+        return False
+
+    if len(dominio) < 7:
+        return False
+    
+    return dominio
 
 
 #----------------------------------------------------------------------------------------------
 # CUERPO PRINCIPAL
 #----------------------------------------------------------------------------------------------
 
+listaDominios = []
 
-#-------------------------------------------------
-# Inicialización de variables
-#-------------------------------------------------
+while True:
+    print("Presione ENTER para terminar, sino")
+    mail = input("Ingrese el email: ")
+    if mail.strip() == "":
+        break
+    else:
+        dominio = validacionEmail(mail)
+        if dominio != False:
+            listaDominios.append(dominio)
+        continue
 
+set(listaDominios)
 
-#-------------------------------------------------
-# Procesos
-#-------------------------------------------------
-
-
-#-------------------------------------------------
-# Resultados
-#-------------------------------------------------
+for dominio in listaDominios:
+    print(dominio)
