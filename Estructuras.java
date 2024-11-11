@@ -755,4 +755,803 @@ public class ArraySet<E> implements Set<E> {
 }
 
 
+//###################
+//##### ABB TDA #####
+//###################
 
+
+public interface ABBTDA<E extends Comparable<E>> {
+	public boolean pertenece( E elemento );
+	public void insertar( E elemento );
+	public E eliminar( E elemento );
+	public String toString();
+}
+
+
+//####################
+//##### NODO ABB #####
+//####################
+
+
+public class NodoABB<E extends Comparable<E>> {
+	private E elemento;
+	private NodoABB<E> padre, izq, der;
+	
+	public NodoABB( E element, NodoABB<E> padre ) {
+	this.elemento = element;
+	this.padre = padre;
+	izq = der = null;
+	}
+	public E getElemento() { return elemento; }
+	public NodoABB<E> getPadre() { return padre; }
+	public NodoABB<E> getIzq() { return izq; }
+	public NodoABB<E> getDer() { return der; }
+	public void setElemento( E element ) { this.elemento = element; }
+	public void setIzq( NodoABB<E> izq ) { this.izq = izq; }
+	public void setDer( NodoABB<E> der ) { this.der = der; }
+	public void setPadre( NodoABB<E> padre ) { this.padre = padre; }
+}
+
+//######################
+//##### COMPARATOR #####
+//######################
+
+
+public class DefaultComparator<E> implements java.util.Comparator<E> { 
+
+	public int compare( E a, E b ) { return((Comparable)a).compareTo(b); } 
+}
+
+
+//#######################
+//##### ArbolBB ABB #####
+//#######################
+
+import java.util.Comparator;
+public class arbolBB<E extends Comparable<E>> implements ABBTDA<E> {
+	protected NodoABB<E> raiz;
+	protected int size;
+	Comparator<E> comp;
+	//CONSTRUCTOR
+	public arbolBB(Comparator<E> comp) { 
+		raiz = new NodoABB<E>(null,null); 
+		size = 0;
+		this.comp = comp;
+	}
+	
+	//PARA BUSCAR UN ELEMENTO
+	public boolean pertenece( E elemento ) { 
+		return buscar(elemento).getElemento() != null; 
+	}
+	private NodoABB<E> buscar( E elemento ) {
+		return buscarAux( elemento, raiz );
+	}
+	private NodoABB<E> buscarAux( E elemento, NodoABB<E> nodov ) {
+		 if( nodov.getElemento() == null ) 
+			 return nodov;
+		 else{
+			 int c = comp.compare( elemento, nodov.getElemento() );
+			 if( c == 0 ) return nodov;
+			 else 
+				 if( c < 0 ) 
+					 return buscarAux( elemento, nodov.getIzq() );
+				 else 
+					 return buscarAux( elemento, nodov.getDer() );
+		 }
+	}
+	
+	//PARA INSERTAR UN ELEMENTO
+	public void insertar( E elemento ) {
+		NodoABB<E> nodov = buscar( elemento );
+		if( nodov.getElemento() == null ) {
+			nodov.setElemento( elemento );
+			nodov.setIzq( new NodoABB<E>( null, nodov ) );
+			nodov.setDer( new NodoABB<E>( null, nodov ) );
+			size++;
+		}
+	}
+	
+	//La solución anterior es más simple pero podía ir por la alternativa
+	//insertar alternativo recursivo como lo vimos en clase:
+	public void insertar2( E elemento ) {
+		insertarAux( elemento, raiz ); 
+	}
+	private void insertarAux( E elemento, NodoABB<E> nodov ) {
+		if( nodov.getElemento() == null ) {
+			nodov.setElemento( elemento ); size++;
+			nodov.setIzq( new NodoABB<E>( null, nodov ) );
+			nodov.setDer( new NodoABB<E>( null, nodov ) );
+		} 
+		else {
+			int c = comp.compare( elemento, nodov.getElemento() );
+			if( c == 0 ) {  /* ¿Qué hacemos si el elemento ya está? */ }
+			else 
+				if( c < 0 ) 
+					insertarAux( elemento, nodov.getIzq() );
+				else 
+					insertarAux( elemento, nodov.getDer() );
+		}
+	}
+	 
+	//PARA ELIMINAR UN ELEMENTO
+	// retorna null si no pudo eliminar a k, retorna k si la pudo eliminar
+	public E eliminar( E elemento ) {
+		NodoABB<E> p = buscar( elemento );
+		if( p.getElemento() != null ) {
+			E eliminado = p.getElemento();
+			eliminarAux( p );
+			size--;
+			return eliminado;
+		} 
+		else 
+			return null;
+	}
+	private boolean isExternal( NodoABB<E> p ) { 
+		return p.getIzq().getElemento() == null && p.getDer().getElemento() == null; 
+	}
+	private boolean soloTieneHijoIzquierdo( NodoABB<E> p ) {
+		return p.getIzq().getElemento() != null &&  p.getDer().getElemento() == null;
+	}
+	private boolean soloTieneHijoDerecho( NodoABB<E> p ) {
+		return p.getDer().getElemento() != null && p.getIzq().getElemento() == null;
+	}
+	
+	private void eliminarAux( NodoABB<E> p ) {
+		if( isExternal(p) ) {  // p es hoja: Convertir el nodo en un dummy y soltar sus hijos dummy.
+			p.setElemento( null );  
+			p.setIzq( null );  
+			p.setDer( null );
+		}
+		else {  // p no es hoja
+			if( soloTieneHijoIzquierdo(p) ) {
+				// Enganchar al padre de p con el hijo izquierdo de p
+				if( p.getPadre().getIzq() == p ) // p es el hijo izquierdo de su padre
+					p.getPadre().setIzq( p.getIzq() );  // el hijo izq del padre de p es ahora el hijo de p
+				else // p es el hijo derecho de su padre
+					p.getPadre().setDer( p.getIzq() ); // el hijo derecho del padre de p es el hijo de p
+				p.getIzq().setPadre( p.getPadre() ); // Ahora el padre del hijo izq de p es su abuelo
+			} 
+			else 
+				if( soloTieneHijoDerecho(p) ) {
+					// Enganchar al padre de p con el hijo derecho de p
+					if( p.getPadre().getIzq() == p ) // p es hijo izquierdo de su padre
+						p.getPadre().setIzq( p.getDer() ); // el hijo izq del padre de p es el hijo de p
+					else
+						p.getPadre().setDer( p.getDer() ); // el hijo derecho del padre de p es el hijo de p
+					p.getDer().setPadre( p.getPadre() ); // Ahora el padre del hijo der. de p es su abuelo
+				} 
+				else { // p tiene dos hijos: seteo como rótulo de p al rótulo del sucesor inorder de p.
+					p.setElemento( eliminarMinimo( p.getDer() ) );
+				}
+		}	
+	}
+	
+	// Elimina el nodo con elemento mínimo del subárbol que tiene como raíz a p
+	// El mínimo rótulo del subárbol que tiene como raíz a p es el rótulo del primer nodo que 
+	// encuentro yendo a la izquierda que no tiene hijo izquierdo 
+	private E eliminarMinimo( NodoABB<E> p ) {
+		if( p.getIzq().getElemento() == null ) {  // El hijo izquierdo de p es un dummy
+			E aRetornar = p.getElemento();  // salvo el rótulo a devolver
+			if( p.getDer().getElemento() == null ) { // p es hoja (pues sus hijos son dummy)
+				p.setElemento( null ); // Convierto a p en dummy haciendo nulo su rótulo
+				p.setIzq( null ); // y desenganchando sus dos hijos dummy
+				p.setDer( null );
+			} 
+			else { 
+				// p solo tiene hijo derecho (xq no tiene izquierdo)
+				// Engancho al padre de p con el hijo derecho de p.
+				// Seguro tiene que ser el hijo derecho de su padre.
+				p.getPadre().setDer( p.getDer() );
+				p.getDer().setPadre( p.getPadre() );
+			}
+			return aRetornar;
+		} 
+		else { // Si p tiene hijo izquierdo, entonces p.getRotulo() no es el mínimo.
+			// El mínimo tiene que estar en el subárbol izquierdo
+			return eliminarMinimo( p.getIzq() );
+		}
+	
+	}
+
+	//un método para mostrar el árbol
+	public String toString() {
+		return inorder( raiz );
+	}
+	private String inorder( NodoABB<E> nodov ) {
+		if( nodov.getElemento() != null ) {
+			return "(" + inorder( nodov.getIzq()) + nodov.getElemento() + inorder( nodov.getDer() ) + ")";
+		}	 
+		else return "";
+	}
+	
+}
+
+//############################
+//##### COMPARAR NOMRBES #####
+//############################
+
+
+public class Nombre implements Comparable<Nombre>{
+	private String Valor;
+	public Nombre (String input) {
+		Valor = input;
+	}
+	public String getValor() {return Valor;}
+	public int compareTo(Nombre otroNombre) {
+		return Valor.compareTo(otroNombre.getValor());
+	}
+}
+
+
+//##################
+//##### AVLTDA #####
+//##################
+
+
+public interface AVLTDA <E extends Comparable<E>> {
+	public boolean pertenece( E elemento );
+	public void insertar( E elemento );
+	public E eliminar( E elemento );
+	public String toString();
+}
+
+
+//####################
+//##### NODO AVL #####
+//####################
+
+
+public class NodoAVL<E> {
+	private NodoAVL<E> padre;
+	private E elemento;
+	private int altura; //diferencia vs ABB
+	private boolean eliminado; // diferencia vs ABB
+	private NodoAVL<E> izq, der;
+	public NodoAVL (E elem, NodoAVL<E> padre){ 
+		altura = 0; 
+		eliminado = false;
+		this.elemento = elem;
+		this.padre = padre;
+		izq = der = null;
+	}
+	public E getElemento() { return elemento; }
+	public NodoAVL<E> getPadre() { return padre; }
+	public NodoAVL<E> getIzq() { return izq; }
+	public NodoAVL<E> getDer() { return der; }
+	public int getAltura() {return altura;}
+	public boolean getEliminado() {return eliminado;}
+	public void setElemento( E element ) { this.elemento = element; }
+	public void setIzq( NodoAVL<E> izq ) { this.izq = izq; }
+	public void setDer( NodoAVL<E> der ) { this.der = der; }
+	public void setPadre( NodoAVL<E> padre ) { this.padre = padre; }
+	public void setAltura(int alt) {this.altura=alt;}
+	public void setEliminado(boolean elim) {this.eliminado=elim;}
+}
+
+
+//###############
+//##### AVL #####
+//###############
+
+
+import Comparator;
+
+public class AVL<E extends Comparable<E>> implements AVLTDA<E>   {
+	protected NodoAVL<E> raiz;
+	protected int size;
+	Comparator<E> comp;
+	//CONSTRUCTOR
+	public AVL(Comparator<E> comp) { 
+		raiz = new NodoAVL<E>(null,null); 
+		size = 0;
+		this.comp = comp;
+	}
+	//PERTENECE ES IGUAL A ABB
+	public boolean pertenece( E elemento ) { 
+		return buscar(elemento).getElemento() != null; 
+	}
+	private NodoAVL<E> buscar( E elemento ) {
+		return buscarAux( elemento, raiz );
+	}
+	private NodoAVL<E> buscarAux( E elemento, NodoAVL<E> nodov ) {
+		 if( nodov.getElemento() == null ) 
+			 return nodov;
+		 else{
+			 int c = comp.compare( elemento, nodov.getElemento() );
+			 if( c == 0 ) return nodov;
+			 else 
+				 if( c < 0 ) 
+					 return buscarAux( elemento, nodov.getIzq() );
+				 else 
+					 return buscarAux( elemento, nodov.getDer() );
+		 }
+	}
+	
+	//VEAMOS AHORA LOS CAMBIOS EN INSERTAR
+	public void insertar(E x)
+	{
+		insertaux( raiz, x );
+	}
+	private int max(int i, int j )
+	{
+		return i>j ? i : j;
+	}
+	private void insertaux(NodoAVL<E> t, E item) {
+		if (t.getElemento() == null) {
+			t.setElemento(item);
+			t.setAltura(1);
+			t.setIzq(new NodoAVL<>(null, t));
+			t.setDer(new NodoAVL<>(null, t));
+		} else {
+			int comparacion = comp.compare(item, t.getElemento());
+			if (comparacion < 0) {
+				insertaux(t.getIzq(), item);
+				if (Math.abs(t.getIzq().getAltura() - t.getDer().getAltura()) > 1) {
+					// Determina si es una Rotación I o II
+					if (comp.compare(item, t.getIzq().getElemento()) < 0)
+						rotacion_I(t);  // Rotación simple a la derecha
+					else
+						rotacion_II(t); // Rotación doble a la derecha
+				}
+			} else if (comparacion > 0) {
+				insertaux(t.getDer(), item);
+				if (Math.abs(t.getIzq().getAltura() - t.getDer().getAltura()) > 1) {
+					// Determina si es una Rotación III o IV
+					if (comp.compare(item, t.getDer().getElemento()) > 0)
+						rotacion_III(t);  // Rotación simple a la izquierda
+					else
+						rotacion_IV(t);   // Rotación doble a la izquierda
+				}
+			} else {
+				// Si el elemento ya está presente, lo actualizamos (opcional según diseño)
+				t.setElemento(item);
+			}
+			// Actualiza la altura del nodo
+			t.setAltura(1 + Math.max(altura(t.getIzq()), altura(t.getDer())));
+		}
+	}
+
+	
+	// Rotación Simple a la Derecha (Rotación I)
+	private void rotacion_I(NodoAVL<E> raizSubArbol) {
+		NodoAVL<E> nodoIzq = raizSubArbol.getIzq();
+		raizSubArbol.setIzq(nodoIzq.getDer());
+		if (nodoIzq.getDer() != null) {
+			nodoIzq.getDer().setPadre(raizSubArbol);
+		}
+		nodoIzq.setPadre(raizSubArbol.getPadre());
+
+		if (raizSubArbol.getPadre() == null) {
+			raiz = nodoIzq;
+		} else if (raizSubArbol == raizSubArbol.getPadre().getDer()) {
+			raizSubArbol.getPadre().setDer(nodoIzq);
+		} else {
+			raizSubArbol.getPadre().setIzq(nodoIzq);
+		}
+		nodoIzq.setDer(raizSubArbol);
+		raizSubArbol.setPadre(nodoIzq);
+
+		// Actualizar las alturas
+		raizSubArbol.setAltura(1 + max(altura(raizSubArbol.getIzq()), altura(raizSubArbol.getDer())));
+		nodoIzq.setAltura(1 + max(altura(nodoIzq.getIzq()), altura(nodoIzq.getDer())));
+	}
+
+	// Rotación Doble a la Derecha (Rotación II)
+	private void rotacion_II(NodoAVL<E> raizSubArbol) {
+		rotacion_III(raizSubArbol.getIzq());
+		rotacion_I(raizSubArbol);
+	}
+
+	// Rotación Simple a la Izquierda (Rotación III)
+	private void rotacion_III(NodoAVL<E> raizSubArbol) {
+		NodoAVL<E> nodoDer = raizSubArbol.getDer();
+		raizSubArbol.setDer(nodoDer.getIzq());
+		if (nodoDer.getIzq() != null) {
+			nodoDer.getIzq().setPadre(raizSubArbol);
+		}
+		nodoDer.setPadre(raizSubArbol.getPadre());
+
+		if (raizSubArbol.getPadre() == null) {
+			raiz = nodoDer;
+		} else if (raizSubArbol == raizSubArbol.getPadre().getIzq()) {
+			raizSubArbol.getPadre().setIzq(nodoDer);
+		} else {
+			raizSubArbol.getPadre().setDer(nodoDer);
+		}
+		nodoDer.setIzq(raizSubArbol);
+		raizSubArbol.setPadre(nodoDer);
+
+		// Actualizar las alturas
+		raizSubArbol.setAltura(1 + max(altura(raizSubArbol.getIzq()), altura(raizSubArbol.getDer())));
+		nodoDer.setAltura(1 + max(altura(nodoDer.getIzq()), altura(nodoDer.getDer())));
+	}
+
+	// Rotación Doble a la Izquierda (Rotación IV)
+	private void rotacion_IV(NodoAVL<E> raizSubArbol) {
+		rotacion_I(raizSubArbol.getDer());
+		rotacion_III(raizSubArbol);
+	}
+	
+	public E eliminar(E elemento) {
+		NodoAVL<E> nodoAEliminar = buscar(elemento);
+		if (nodoAEliminar == null || nodoAEliminar.getElemento() == null) {
+			return null; // Elemento no encontrado
+		}
+		E eliminado = nodoAEliminar.getElemento();
+		raiz = eliminarNodo(raiz, elemento);
+		return eliminado;
+	}
+
+	private NodoAVL<E> eliminarNodo(NodoAVL<E> nodo, E elemento) {
+		if (nodo == null || nodo.getElemento() == null) {
+			return nodo;
+		}
+
+		int comparacion = comp.compare(elemento, nodo.getElemento());
+
+		if (comparacion < 0) {
+			nodo.setIzq(eliminarNodo(nodo.getIzq(), elemento));
+		} else if (comparacion > 0) {
+			nodo.setDer(eliminarNodo(nodo.getDer(), elemento));
+		} else {
+			// Nodo encontrado
+			if (nodo.getIzq().getElemento() == null) {
+				return nodo.getDer();
+			} else if (nodo.getDer().getElemento() == null) {
+				return nodo.getIzq();
+			} else {
+				// Nodo con dos hijos
+				NodoAVL<E> sucesor = encontrarMin(nodo.getDer());
+				nodo.setElemento(sucesor.getElemento());
+				nodo.setDer(eliminarNodo(nodo.getDer(), sucesor.getElemento()));
+			}
+		}
+
+		// Actualizar la altura y balancear el nodo
+		nodo.setAltura(1 + Math.max(altura(nodo.getIzq()), altura(nodo.getDer())));
+		return balancear(nodo);
+	}
+
+	private NodoAVL<E> encontrarMin(NodoAVL<E> nodo) {
+		while (nodo.getIzq().getElemento() != null) {
+			nodo = nodo.getIzq();
+		}
+		return nodo;
+	}
+	
+	
+	private NodoAVL<E> balancear(NodoAVL<E> nodo) {
+		int balance = obtenerBalance(nodo);
+
+		// Rotación derecha
+		if (balance > 1 && obtenerBalance(nodo.getIzq()) >= 0) {
+			return rotacionDerecha(nodo);
+		}
+
+		// Rotación izquierda-derecha
+		if (balance > 1 && obtenerBalance(nodo.getIzq()) < 0) {
+			nodo.setIzq(rotacionIzquierda(nodo.getIzq()));
+			return rotacionDerecha(nodo);
+		}
+
+		// Rotación izquierda
+		if (balance < -1 && obtenerBalance(nodo.getDer()) <= 0) {
+			return rotacionIzquierda(nodo);
+		}
+
+		// Rotación derecha-izquierda
+		if (balance < -1 && obtenerBalance(nodo.getDer()) > 0) {
+			nodo.setDer(rotacionDerecha(nodo.getDer()));
+			return rotacionIzquierda(nodo);
+		}
+
+		return nodo;
+	}
+	
+	private NodoAVL<E> rotacionDerecha(NodoAVL<E> y) {
+		NodoAVL<E> x = y.getIzq();
+		NodoAVL<E> T2 = x.getDer();
+
+		x.setDer(y);
+		y.setIzq(T2);
+
+		y.setAltura(1 + max(altura(y.getIzq()), altura(y.getDer())));
+		x.setAltura(1 + max(altura(x.getIzq()), altura(x.getDer())));
+
+		return x;
+	}
+
+	private NodoAVL<E> rotacionIzquierda(NodoAVL<E> x) {
+		NodoAVL<E> y = x.getDer();
+		NodoAVL<E> T2 = y.getIzq();
+
+		y.setIzq(x);
+		x.setDer(T2);
+
+		x.setAltura(1 + max(altura(x.getIzq()), altura(x.getDer())));
+		y.setAltura(1 + max(altura(y.getIzq()), altura(y.getDer())));
+
+		return y;
+	}
+	
+	private int altura(NodoAVL<E> nodo) {
+		return nodo == null ? -1 : nodo.getAltura();
+	}
+
+	private int obtenerBalance(NodoAVL<E> nodo) {
+		return nodo == null ? 0 : altura(nodo.getIzq()) - altura(nodo.getDer());
+	}
+}
+
+
+
+//#####################
+//##### GRAFO TDA #####
+//#####################
+
+public interface GrafoTDA<E> {
+	void agregarVertice(E v); //grafo inicializado y ∄ vértice
+	void eliminarVertice(E v); //grafo inicializado y ∃ vértice
+	E[] vertices(); //grafo inicializado
+	void agregarArista(E v1, E v2, int peso); //grafo inicializado, ∄ arista y ∃ ambos vértices
+	void eliminarArista(E v1, E v2); //grafo inicializado y ∃ arista
+	boolean existeArista(E v1, E v2); //grafo inicializado y ∃ ambos vértices
+	int pesoArista(E v1, E v2); //grafo inicializado y ∃ arista
+}
+
+//#######################
+//##### NODO ARISTA #####
+//#######################
+
+public class NodoArista<E> {
+	private int peso;
+	private NodoVertice<E> verticeDestino;
+	private NodoArista<E> sigArista;
+	
+	public NodoArista() {}
+	
+	public int getPeso() {
+		return peso;
+	}
+	public void setPeso(int peso) {
+		this.peso = peso;
+	}
+	public NodoVertice<E> getVerticeDestino() {
+		return verticeDestino;
+	}
+	public void setVerticeDestino(NodoVertice<E> verticeDestino) {
+		this.verticeDestino = verticeDestino;
+	}
+	public NodoArista<E> getSigArista() {
+		return sigArista;
+	}
+	public void setSigArista(NodoArista<E> sigArista) {
+		this.sigArista = sigArista;
+	}
+	
+}
+
+//########################
+//##### NODO VERTICE #####
+//########################
+
+public class NodoVertice<E> {
+	private E vertice;
+	private NodoArista<E> aristas;
+	private NodoVertice<E> sigVertice;
+	
+	public NodoVertice() {}
+	
+	public E getVertice() {
+		return vertice;
+	}
+
+	public void setVertice(E vertice) {
+		this.vertice = vertice;
+	}
+
+	public NodoArista<E> getAristas() {
+		return aristas;
+	}
+
+	public void setAristas(NodoArista<E> aristas) {
+		this.aristas = aristas;
+	}
+
+	public NodoVertice<E> getSigVertice() {
+		return sigVertice;
+	}
+
+	public void setSigVertice(NodoVertice<E> sigVertice) {
+		this.sigVertice = sigVertice;
+	}
+	
+}
+
+//##########################################
+//##### GRAFO CON MATRIZ DE ADYACENCIA #####
+//##########################################
+
+public class GrafoEst<E> implements GrafoTDA<E> {
+	private int[][] mAdy; //Matriz de adyacencia
+	private E[] etiqs; //Vector para mapeo a índices
+	private int cantNodos;
+	
+	@SuppressWarnings("unchecked")
+	public void inicializarGrafo() {
+		mAdy = new int[100][100];
+		etiqs = (E[])new Object[100];
+		cantNodos = 0;
+	}
+	
+	public void agregarVertice(E v) {
+		etiqs[cantNodos] = v;
+		for (int i = 0; i <= cantNodos; i++) {
+			mAdy[cantNodos][i] = 0; //Nueva fila en 0
+			mAdy[i][cantNodos] = 0; //Nueva columna en 0
+		}
+		cantNodos++;
+	}
+	
+	public void eliminarVertice(E v) {
+		int ind = vert2Indice(v); //índice del vértice por eliminar
+		for (int k = 0; k < cantNodos; k++)
+			mAdy[k][ind] = mAdy[k][cantNodos-1]; //se “pisa” la fila...
+		for (int k = 0; k < cantNodos; k++)
+			mAdy[ind][k] = mAdy[cantNodos-1][k]; //... y la columna
+		etiqs[ind] = etiqs[cantNodos-1];
+		cantNodos--;
+	}
+	
+	private int vert2Indice(E v) { //Mapeamos vértice a índice
+		int i = cantNodos-1;
+		while(i >= 0 && etiqs[i] != v)
+			i--;
+		return i;
+	}
+	
+	public E[] vertices() {
+		@SuppressWarnings("unchecked")
+		E[] salida = (E[])new Object[100];
+		for (int i = 0; i < cantNodos; i++) {
+			salida[i]=etiqs[i];
+		}
+		return salida;
+	}
+	
+	public void agregarArista(E v1, E v2, int peso) {
+		int o = vert2Indice(v1);
+		int d = vert2Indice(v2);
+		mAdy[o][d] = peso;
+	}
+	
+	public void eliminarArista(E v1, E v2) {
+		int o = vert2Indice(v1);
+		int d = vert2Indice(v2);
+		mAdy[o][d] = 0;
+	}
+	
+	public boolean existeArista(E v1, E v2) {
+		int o = vert2Indice(v1);
+		int d = vert2Indice(v2);
+		return mAdy[o][d] != 0;
+	}
+	
+	public int pesoArista(E v1, E v2) {
+		int o = vert2Indice(v1);
+		int d = vert2Indice(v2);
+		return mAdy[o][d];
+	}
+}
+
+
+//##########################################
+//##### GRAFO DIN #####
+//##########################################
+
+
+public class GrafoDin<E> implements GrafoTDA<E> {
+	private NodoVertice<E> origen;
+	private int vertices;
+	
+	public GrafoDin() {
+		origen = null;
+	}
+	
+	public void agregarVertice(E v) { //El vértice se inserta al inicio de la lista de nodos
+		NodoVertice<E> aux = new NodoVertice<E>();
+		aux.setVertice(v);
+		aux.setAristas(null);
+		aux.setSigVertice(origen);
+		origen = aux;
+		vertices++;
+	}
+	
+	
+	
+	public void eliminarVertice(E v) {
+		if (origen.getVertice().equals(v)) //Es el origen
+			origen = origen.getSigVertice(); //Se elimina el origen
+		NodoVertice<E> aux = origen; //No es el origen; hay que buscarlo
+		while (aux != null) { //Eliminamos aristas hacia v
+			this.eliminarAristaNodo(aux, v);
+			if (aux.getSigVertice() != null && aux.getSigVertice().getVertice().equals(v)) {
+				aux.setSigVertice(aux.getSigVertice().getSigVertice()); //Si es el nodo, lo elimina
+				vertices--;
+			}
+			aux = aux.getSigVertice(); //Sigue eliminando aristas
+		}
+		
+	}
+	
+	private void eliminarAristaNodo(NodoVertice<E> nodo, E v) {
+		NodoArista<E> aux = nodo.getAristas(); //Elimina de nodo las aristas hacia v
+		if (aux != null) {
+			if (aux.getVerticeDestino().getVertice().equals(v)) { //Hay que eliminar la primera arista
+				nodo.setAristas(aux.getSigArista());
+			} 
+			else { //No es la primera; la buscamos
+				while (aux.getSigArista() != null && !aux.getSigArista().getVerticeDestino().getVertice().equals(v))
+					aux = aux.getSigArista();
+				if (aux.getSigArista() != null) { //Eliminamos la arista
+					aux.setSigArista(aux.getSigArista().getSigArista());
+				}
+			}
+		}
+	}
+	
+	public E[] vertices() {
+		@SuppressWarnings("unchecked")
+		E[] salida = (E[])new Object[vertices];
+		NodoVertice<E> aux = origen;
+		int i = 0;
+		while (aux != null) {
+			salida[i]=aux.getVertice();
+			i++;
+			aux = aux.getSigVertice();
+		}
+		return salida;
+	}
+	
+	public void agregarArista(E v1, E v2, int peso ) {
+		NodoVertice<E> n1 = vert2Nodo(v1); //Buscamos el nodo origen...
+		NodoVertice<E> n2 = vert2Nodo(v2); //... y el nodo destino
+		NodoArista<E> aux = new NodoArista<E>(); //La arista va al inicio de la lista...
+		aux.setPeso(peso); //... de aristas salientes de v1
+		aux.setVerticeDestino(n2);
+		aux.setSigArista(n1.getAristas());
+		n1.setAristas(aux);
+	}
+	
+	private NodoVertice<E> vert2Nodo(E v) { //Dado un valor, busca el nodo correspondiente
+		NodoVertice<E> aux = origen;
+		while (aux != null && !aux.getVertice().equals(v))
+			aux = aux.getSigVertice();
+		return aux;
+	}
+	
+	public void eliminarArista(E v1, E v2) {
+		NodoVertice<E> n1 = vert2Nodo(v1);
+		eliminarAristaNodo(n1, v2);
+	}
+	
+	public boolean existeArista(E v1, E v2) {
+		NodoVertice<E> n1 = vert2Nodo(v1);
+		NodoArista<E> aux = n1.getAristas();
+		while (aux != null && !aux.getVerticeDestino().getVertice().equals(v2)) {
+			aux = aux.getSigArista();
+		}
+		//Solo si se encontro la arista buscada, aux no es null
+		return aux != null;
+	}
+	
+	public int pesoArista(E v1, E v2) {
+		NodoVertice<E> n1 = vert2Nodo(v1);
+		NodoArista<E> aux = n1.getAristas();
+		while (!aux.getVerticeDestino().getVertice().equals(v2))
+			aux = aux.getSigArista(); //Buscamos la arista
+		return aux.getPeso();
+	}
+	
+
+}
