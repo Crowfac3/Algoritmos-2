@@ -1445,9 +1445,9 @@ public class GrafoEst<E> implements GrafoTDA<E> {
 }
 
 
-//##########################################
-//##### GRAFO DIN #####
-//##########################################
+//#########################################
+//##### GRAFO CON LISTA DE ADYACENCIA #####
+//#########################################
 
 
 public class GrafoDin<E> implements GrafoTDA<E> {
