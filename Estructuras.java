@@ -1104,7 +1104,7 @@ public class arbolBB<E extends Comparable<E>> implements ABBTDA<E> {
 				// p solo tiene hijo derecho (xq no tiene izquierdo)
 				// Engancho al padre de p con el hijo derecho de p.
 				// Seguro tiene que ser el hijo derecho de su padre.
-				p.getPadre().setDer( p.getDer() );
+				p.getPadre().setIzq( p.getDer() );
 				p.getDer().setPadre( p.getPadre() );
 			}
 			return aRetornar;
