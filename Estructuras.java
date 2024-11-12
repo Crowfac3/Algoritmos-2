@@ -329,6 +329,157 @@ public class LinkedList<E> implements List<E> {
 }
 
 
+//#################
+//##### QUEUE #####
+//#################
+
+public interface Queue<E> {
+    // Inserta un elemento en el final de la cola
+    void enqueue(E item);
+    
+    // Elimina y retorna el elemento en el frente de la cola
+    E dequeue();
+    
+    // Retorna el elemento en el frente de la cola sin eliminarlo
+    E front();
+    
+    // Verifica si la cola está vacía
+    boolean isEmpty();
+    
+    // Retorna el tamaño de la cola
+    int size();
+}
+
+
+//#######################
+//##### ARRAY QUEUE #####
+//#######################
+
+public class ArrayQueue<E> implements Queue<E> {
+	
+    private E[] q;         // El arreglo que mantiene los elementos de la cola
+    private int front;     // Posición del próximo elemento a eliminar (f)
+    private int rear;      // Posición del próximo espacio disponible para insertar (r)
+    private int size;      // Tamaño actual de la cola
+    private int capacity;  // Capacidad máxima del arreglo
+    
+    
+    
+	@SuppressWarnings("unchecked")
+	public ArrayQueue(int capacity) {
+    	this.capacity = capacity;
+    	q = (E[]) new Object[capacity];
+    	front = 0;
+    	rear = 0;
+    	size = 0;
+    } 
+    
+    
+    public void enqueue(E item) {
+    	if (size == capacity) {
+    		throw new IllegalStateException("La cola está llena");
+    	}
+    	q[rear] = item;
+    	rear = (rear + 1) % capacity;
+    	size++;
+    }
+    
+    @Override
+    public E dequeue() {
+        if (isEmpty()) {
+            throw new IllegalStateException("La cola está vacía");
+        }
+        E item = q[front];
+        q[front] = null;  // Limpia la referencia
+        front = (front + 1) % capacity;  // Mueve 'f' de manera circular
+        size--;
+        return item;
+    }
+
+    @Override
+    public E front() {
+        if (isEmpty()) {
+            throw new IllegalStateException("La cola está vacía");
+        }
+        return q[front];
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    @Override
+    public int size() {
+        return size;
+    }
+
+}
+
+
+
+
+//########################
+//##### LINKED QUEUE #####
+//########################
+
+public class LinkedQueue<E> implements Queue<E> {
+    private Nodo<E> front;  // Nodo al frente de la cola
+    private Nodo<E> rear;   // Nodo al final de la cola
+    private int size;       // Tamaño de la cola
+
+    public LinkedQueue() {
+        front = null;
+        rear = null;
+        size = 0;
+    }
+
+    @Override
+    public void enqueue(E item) {
+        Nodo<E> newNode = new Nodo<>(item);
+        if (isEmpty()) {
+            front = newNode;
+        } else {
+            rear.siguiente = newNode;
+        }
+        rear = newNode;
+        size++;
+    }
+
+    @Override
+    public E dequeue() {
+        if (isEmpty()) {
+            throw new IllegalStateException("La cola está vacía");
+        }
+        E data = front.info;
+        front = front.siguiente;
+        if (front == null) {
+            rear = null; // Si la cola queda vacía, rear también debe ser null
+        }
+        size--;
+        return data;
+    }
+
+    @Override
+    public E front() {
+        if (isEmpty()) {
+            throw new IllegalStateException("La cola está vacía");
+        }
+        return front.info;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return front == null;
+    }
+
+    @Override
+    public int size() {
+        return size;
+    }
+}
+
+
 
 //#################
 //##### ENTRY #####
@@ -1045,8 +1196,7 @@ public class NodoAVL<E> {
 //##### AVL #####
 //###############
 
-
-import Comparator;
+import java.util.Comparator;
 
 public class AVL<E extends Comparable<E>> implements AVLTDA<E>   {
 	protected NodoAVL<E> raiz;
@@ -1084,10 +1234,18 @@ public class AVL<E extends Comparable<E>> implements AVLTDA<E>   {
 	{
 		insertaux( raiz, x );
 	}
+	
+	
 	private int max(int i, int j )
 	{
 		return i>j ? i : j;
 	}
+	
+	public NodoAVL<E> getRaiz() {
+	    return this.raiz;
+	}
+	
+	
 	private void insertaux(NodoAVL<E> t, E item) {
 		if (t.getElemento() == null) {
 			t.setElemento(item);
@@ -1293,7 +1451,64 @@ public class AVL<E extends Comparable<E>> implements AVLTDA<E>   {
 	private int obtenerBalance(NodoAVL<E> nodo) {
 		return nodo == null ? 0 : altura(nodo.getIzq()) - altura(nodo.getDer());
 	}
+	
+	@Override
+	public String toString() {
+	    StringBuilder sb = new StringBuilder();
+	    inOrderTraversal(this.raiz, sb);
+	    return sb.toString();
+	}
+
+	// Método para In-Order traversal
+	public String inOrder() {
+	    StringBuilder sb = new StringBuilder();
+	    inOrderTraversal(this.raiz, sb);
+	    return sb.toString().trim();
+	}
+
+	private void inOrderTraversal(NodoAVL<E> nodo, StringBuilder sb) {
+	    if (nodo == null || nodo.getElemento() == null) {
+	        return;
+	    }
+	    inOrderTraversal(nodo.getIzq(), sb);
+	    sb.append(nodo.getElemento()).append(" ");
+	    inOrderTraversal(nodo.getDer(), sb);
+	}
+
+	// Método para Pre-Order traversal
+	public String preOrder() {
+	    StringBuilder sb = new StringBuilder();
+	    preOrderTraversal(this.raiz, sb);
+	    return sb.toString().trim();
+	}
+
+	private void preOrderTraversal(NodoAVL<E> nodo, StringBuilder sb) {
+	    if (nodo == null || nodo.getElemento() == null) {
+	        return;
+	    }
+	    sb.append(nodo.getElemento()).append(" ");
+	    preOrderTraversal(nodo.getIzq(), sb);
+	    preOrderTraversal(nodo.getDer(), sb);
+	}
+
+	// Método para Post-Order traversal
+	public String postOrder() {
+	    StringBuilder sb = new StringBuilder();
+	    postOrderTraversal(this.raiz, sb);
+	    return sb.toString().trim();
+	}
+
+	private void postOrderTraversal(NodoAVL<E> nodo, StringBuilder sb) {
+	    if (nodo == null || nodo.getElemento() == null) {
+	        return;
+	    }
+	    postOrderTraversal(nodo.getIzq(), sb);
+	    postOrderTraversal(nodo.getDer(), sb);
+	    sb.append(nodo.getElemento()).append(" ");
+	}
+	
 }
+
 
 
 
