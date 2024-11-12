@@ -726,6 +726,7 @@ public class LinkedSetList<E> implements Set<E>{
 public class LinkedSet<E> implements Set<E> {
 	private Node<E> head;
 	private int size;
+	@SuppressWarnings("unused")
 	private Node<E> current;
 	//constructor
 	public LinkedSet(){
@@ -741,24 +742,36 @@ public class LinkedSet<E> implements Set<E> {
 		}	
 	}
 	public void delete(E x) {
-		if(head!=null && x.equals(head.getElement()))
-		{
-			Node<E> aux=head.getNext();
-			head.setNext(null);
-			head=aux;
-			size--;
-		}
-		Node<E> aux=head;
-		while(aux!=null && !aux.getNext().getElement().equals(x)) 
-			aux=aux.getNext();
-		if(aux!=null)
-		{
-			Node<E> aEliminar = aux.getNext();
-			aux.setNext(aEliminar.getNext());
-			aEliminar.setNext(null);
-			size--;
-		}
+	    if (head == null) {
+	        throw new MyException("El conjunto está vacío, no se puede eliminar.");
+	    }
+
+	    // Caso especial: eliminar el primer nodo
+	    if (head.getElement().equals(x)) {
+	        Node<E> aux = head.getNext();
+	        head.setNext(null);
+	        head = aux;
+	        size--;
+	        return;
+	    }
+
+	    Node<E> aux = head;
+	    while (aux.getNext() != null && !aux.getNext().getElement().equals(x)) {
+	        aux = aux.getNext();
+	    }
+
+	    if (aux.getNext() == null) {
+	        throw new MyException("El elemento no pertenece al conjunto, no se puede eliminar.");
+	    }
+
+	    // Eliminar el nodo encontrado
+	    Node<E> aEliminar = aux.getNext();
+	    aux.setNext(aEliminar.getNext());
+	    aEliminar.setNext(null);
+	    size--;
 	}
+	
+	
 	public boolean member(E x) {
 		Node<E> aux = head;
 		boolean encontre =false;
@@ -1677,57 +1690,139 @@ public class GrafoEst<E> implements GrafoTDA<E> {
 //#########################################
 
 
+package clase_10_ejercicio_3;
+
 public class GrafoDin<E> implements GrafoTDA<E> {
-	private NodoVertice<E> origen;
-	private int vertices;
-	
-	public GrafoDin() {
-		origen = null;
-	}
-	
-	public void agregarVertice(E v) { //El vértice se inserta al inicio de la lista de nodos
-		NodoVertice<E> aux = new NodoVertice<E>();
-		aux.setVertice(v);
-		aux.setAristas(null);
-		aux.setSigVertice(origen);
-		origen = aux;
-		vertices++;
-	}
-	
-	
-	
-	public void eliminarVertice(E v) {
-		if (origen.getVertice().equals(v)) //Es el origen
-			origen = origen.getSigVertice(); //Se elimina el origen
-		NodoVertice<E> aux = origen; //No es el origen; hay que buscarlo
-		while (aux != null) { //Eliminamos aristas hacia v
-			this.eliminarAristaNodo(aux, v);
-			if (aux.getSigVertice() != null && aux.getSigVertice().getVertice().equals(v)) {
-				aux.setSigVertice(aux.getSigVertice().getSigVertice()); //Si es el nodo, lo elimina
-				vertices--;
-			}
-			aux = aux.getSigVertice(); //Sigue eliminando aristas
-		}
-		
-	}
-	
-	private void eliminarAristaNodo(NodoVertice<E> nodo, E v) {
-		NodoArista<E> aux = nodo.getAristas(); //Elimina de nodo las aristas hacia v
-		if (aux != null) {
-			if (aux.getVerticeDestino().getVertice().equals(v)) { //Hay que eliminar la primera arista
-				nodo.setAristas(aux.getSigArista());
-			} 
-			else { //No es la primera; la buscamos
-				while (aux.getSigArista() != null && !aux.getSigArista().getVerticeDestino().getVertice().equals(v))
-					aux = aux.getSigArista();
-				if (aux.getSigArista() != null) { //Eliminamos la arista
-					aux.setSigArista(aux.getSigArista().getSigArista());
-				}
-			}
-		}
-	}
-	
-	public E[] vertices() {
+    private NodoVertice<E> origen;
+    private int vertices;
+
+    public GrafoDin() {
+        origen = null;
+    }
+
+    // Método para agregar un vértice al grafo
+    public void agregarVertice(E v) {
+        NodoVertice<E> aux = new NodoVertice<>();
+        aux.setVertice(v);
+        aux.setAristas(null);
+        aux.setSigVertice(origen);
+        origen = aux;
+        vertices++;
+    }
+
+    // Método para eliminar un vértice del grafo
+    public void eliminarVertice(E v) {
+        if (origen.getVertice().equals(v)) {
+            origen = origen.getSigVertice();
+        }
+        NodoVertice<E> aux = origen;
+        while (aux != null) {
+            eliminarAristaNodo(aux, v);
+            if (aux.getSigVertice() != null && aux.getSigVertice().getVertice().equals(v)) {
+                aux.setSigVertice(aux.getSigVertice().getSigVertice());
+                vertices--;
+            }
+            aux = aux.getSigVertice();
+        }
+    }
+
+    private void eliminarAristaNodo(NodoVertice<E> nodo, E v) {
+        NodoArista<E> aux = nodo.getAristas();
+        if (aux != null) {
+            if (aux.getVerticeDestino().getVertice().equals(v)) {
+                nodo.setAristas(aux.getSigArista());
+            } else {
+                while (aux.getSigArista() != null && !aux.getSigArista().getVerticeDestino().getVertice().equals(v)) {
+                    aux = aux.getSigArista();
+                }
+                if (aux.getSigArista() != null) {
+                    aux.setSigArista(aux.getSigArista().getSigArista());
+                }
+            }
+        }
+    }
+
+    public void agregarArista(E v1, E v2, int peso) {
+        NodoVertice<E> n1 = vert2Nodo(v1);
+        NodoVertice<E> n2 = vert2Nodo(v2);
+        NodoArista<E> aux = new NodoArista<>();
+        aux.setPeso(peso);
+        aux.setVerticeDestino(n2);
+        aux.setSigArista(n1.getAristas());
+        n1.setAristas(aux);
+    }
+
+    private NodoVertice<E> vert2Nodo(E v) {
+        NodoVertice<E> aux = origen;
+        while (aux != null && !aux.getVertice().equals(v)) {
+            aux = aux.getSigVertice();
+        }
+        return aux;
+    }
+
+ // Método 1: Obtener conjunto de vértices aislados
+    public LinkedSet<E> obtenerVerticesAislados() {
+        LinkedSet<E> verticesAislados = new LinkedSet<>();
+        NodoVertice<E> aux = origen;
+
+        // Inicialmente, asumimos que todos los vértices son aislados
+        while (aux != null) {
+            verticesAislados.insert(aux.getVertice());
+            aux = aux.getSigVertice();
+        }
+
+        // Revisamos aristas salientes y entrantes para descalificar los vértices
+        aux = origen;
+        while (aux != null) {
+            NodoArista<E> arista = aux.getAristas();
+            while (arista != null) {
+                if (verticesAislados.member(aux.getVertice())) {
+                    verticesAislados.delete(aux.getVertice()); // Tiene aristas salientes
+                }
+                if (verticesAislados.member(arista.getVerticeDestino().getVertice())) {
+                    verticesAislados.delete(arista.getVerticeDestino().getVertice()); // Tiene aristas entrantes
+                }
+                arista = arista.getSigArista();
+            }
+            aux = aux.getSigVertice();
+        }
+
+        return verticesAislados;
+    }
+
+ // Método para obtener los vértices puente entre v1 y v2
+    public LinkedSet<E> obtenerVerticesPuente(E v1, E v2) {
+        LinkedSet<E> verticesPuente = new LinkedSet<>();
+        NodoVertice<E> origenNodo = vert2Nodo(v1);
+
+        if (origenNodo == null) {
+            System.out.println("El vértice origen " + v1 + " no existe en el grafo.");
+            return verticesPuente; // v1 no existe en el grafo
+        }
+
+        NodoArista<E> arista = origenNodo.getAristas();
+        while (arista != null) {
+            NodoVertice<E> puenteNodo = arista.getVerticeDestino();
+            if (existeArista(puenteNodo.getVertice(), v2)) {
+                System.out.println("El vértice " + puenteNodo.getVertice() + " es puente entre " + v1 + " y " + v2);
+                verticesPuente.insert(puenteNodo.getVertice());
+            }
+            arista = arista.getSigArista();
+        }
+
+        return verticesPuente;
+    }
+
+    public boolean existeArista(E v1, E v2) {
+        NodoVertice<E> n1 = vert2Nodo(v1);
+        NodoArista<E> aux = n1.getAristas();
+        while (aux != null && !aux.getVerticeDestino().getVertice().equals(v2)) {
+            aux = aux.getSigArista();
+        }
+        return aux != null;
+    }
+
+    public E[] vertices() {
 		@SuppressWarnings("unchecked")
 		E[] salida = (E[])new Object[vertices];
 		NodoVertice<E> aux = origen;
@@ -1739,46 +1834,18 @@ public class GrafoDin<E> implements GrafoTDA<E> {
 		}
 		return salida;
 	}
-	
-	public void agregarArista(E v1, E v2, int peso ) {
-		NodoVertice<E> n1 = vert2Nodo(v1); //Buscamos el nodo origen...
-		NodoVertice<E> n2 = vert2Nodo(v2); //... y el nodo destino
-		NodoArista<E> aux = new NodoArista<E>(); //La arista va al inicio de la lista...
-		aux.setPeso(peso); //... de aristas salientes de v1
-		aux.setVerticeDestino(n2);
-		aux.setSigArista(n1.getAristas());
-		n1.setAristas(aux);
-	}
-	
-	private NodoVertice<E> vert2Nodo(E v) { //Dado un valor, busca el nodo correspondiente
-		NodoVertice<E> aux = origen;
-		while (aux != null && !aux.getVertice().equals(v))
-			aux = aux.getSigVertice();
-		return aux;
-	}
-	
-	public void eliminarArista(E v1, E v2) {
+
+    public void eliminarArista(E v1, E v2) {
 		NodoVertice<E> n1 = vert2Nodo(v1);
 		eliminarAristaNodo(n1, v2);
 	}
-	
-	public boolean existeArista(E v1, E v2) {
-		NodoVertice<E> n1 = vert2Nodo(v1);
-		NodoArista<E> aux = n1.getAristas();
-		while (aux != null && !aux.getVerticeDestino().getVertice().equals(v2)) {
-			aux = aux.getSigArista();
-		}
-		//Solo si se encontro la arista buscada, aux no es null
-		return aux != null;
-	}
-	
-	public int pesoArista(E v1, E v2) {
+
+    public int pesoArista(E v1, E v2) {
 		NodoVertice<E> n1 = vert2Nodo(v1);
 		NodoArista<E> aux = n1.getAristas();
 		while (!aux.getVerticeDestino().getVertice().equals(v2))
 			aux = aux.getSigArista(); //Buscamos la arista
 		return aux.getPeso();
 	}
-	
-
 }
+
