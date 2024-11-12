@@ -896,34 +896,46 @@ public class arbolBB<E extends Comparable<E>> implements ABBTDA<E> {
 		return p.getDer().getElemento() != null && p.getIzq().getElemento() == null;
 	}
 	
-	private void eliminarAux( NodoABB<E> p ) {
-		if( isExternal(p) ) {  // p es hoja: Convertir el nodo en un dummy y soltar sus hijos dummy.
-			p.setElemento( null );  
-			p.setIzq( null );  
-			p.setDer( null );
-		}
-		else {  // p no es hoja
-			if( soloTieneHijoIzquierdo(p) ) {
-				// Enganchar al padre de p con el hijo izquierdo de p
-				if( p.getPadre().getIzq() == p ) // p es el hijo izquierdo de su padre
-					p.getPadre().setIzq( p.getIzq() );  // el hijo izq del padre de p es ahora el hijo de p
-				else // p es el hijo derecho de su padre
-					p.getPadre().setDer( p.getIzq() ); // el hijo derecho del padre de p es el hijo de p
-				p.getIzq().setPadre( p.getPadre() ); // Ahora el padre del hijo izq de p es su abuelo
-			} 
-			else 
-				if( soloTieneHijoDerecho(p) ) {
-					// Enganchar al padre de p con el hijo derecho de p
-					if( p.getPadre().getIzq() == p ) // p es hijo izquierdo de su padre
-						p.getPadre().setIzq( p.getDer() ); // el hijo izq del padre de p es el hijo de p
-					else
-						p.getPadre().setDer( p.getDer() ); // el hijo derecho del padre de p es el hijo de p
-					p.getDer().setPadre( p.getPadre() ); // Ahora el padre del hijo der. de p es su abuelo
-				} 
-				else { // p tiene dos hijos: seteo como rótulo de p al rótulo del sucesor inorder de p.
-					p.setElemento( eliminarMinimo( p.getDer() ) );
-				}
-		}	
+	private void eliminarAux(NodoABB<E> p) {
+	    if (isExternal(p)) { // Si el nodo es una hoja (es decir, no tiene hijos)
+	        // Convertir el nodo en un nodo "dummy" y eliminar sus referencias a los hijos
+	        p.setElemento(null);
+	        p.setIzq(null);
+	        p.setDer(null);
+	    } else {
+	        if (soloTieneHijoIzquierdo(p)) { // Si el nodo tiene solo un hijo izquierdo
+	            if (p.getPadre() == null) { // Caso especial: si el nodo es la raíz
+	                // La raíz pasa a ser el hijo izquierdo y se elimina la referencia al padre
+	                raiz = p.getIzq();
+	                raiz.setPadre(null);
+	            } else if (p.getPadre().getIzq() == p) { // Si el nodo a eliminar es el hijo izquierdo de su padre
+	                // Se engancha el hijo izquierdo del nodo a su abuelo (el padre del nodo a eliminar)
+	                p.getPadre().setIzq(p.getIzq());
+	                p.getIzq().setPadre(p.getPadre());
+	            } else { // Si el nodo a eliminar es el hijo derecho de su padre
+	                // Se engancha el hijo izquierdo del nodo a su abuelo (el padre del nodo a eliminar)
+	                p.getPadre().setDer(p.getIzq());
+	                p.getIzq().setPadre(p.getPadre());
+	            }
+	        } else if (soloTieneHijoDerecho(p)) { // Si el nodo tiene solo un hijo derecho
+	            if (p.getPadre() == null) { // Caso especial: si el nodo es la raíz
+	                // La raíz pasa a ser el hijo derecho y se elimina la referencia al padre
+	                raiz = p.getDer();
+	                raiz.setPadre(null);
+	            } else if (p.getPadre().getIzq() == p) { // Si el nodo a eliminar es el hijo izquierdo de su padre
+	                // Se engancha el hijo derecho del nodo a su abuelo (el padre del nodo a eliminar)
+	                p.getPadre().setIzq(p.getDer());
+	                p.getDer().setPadre(p.getPadre());
+	            } else { // Si el nodo a eliminar es el hijo derecho de su padre
+	                // Se engancha el hijo derecho del nodo a su abuelo (el padre del nodo a eliminar)
+	                p.getPadre().setDer(p.getDer());
+	                p.getDer().setPadre(p.getPadre());
+	            }
+	        } else { // Si el nodo tiene ambos hijos (nodo con dos hijos)
+	            // Se reemplaza el elemento del nodo con el valor mínimo del subárbol derecho
+	            p.setElemento(eliminarMinimo(p.getDer()));
+	        }
+	    }
 	}
 	
 	// Elimina el nodo con elemento mínimo del subárbol que tiene como raíz a p
